@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		#game-board {
+			position: relative;
+			height: 600px;
+			width: 600px;
+			border: 5px solid rgb(15, 197, 238);
+			background: #000;
+		}
+		.dot {
+			position: absolute;
+			height: 20px;
+			width: 20px;
+			background: #c6f;
+		}
+		.apple {
+			position: absolute;
+			height: 20px;
+			width: 20px;
+			background: #f66;
+		}
+	</style>
+</head>
+<body>
+	<marquee><h5><b><i>WORK HARD!</i></b></h5></marquee>
+	<center><progress></progress>
+		<h1>Welcome to SnakeX</h1></center>
+	<div id="game-board"></div>
+	<script>
+		var dotSize = 20;
+		var gameBoardSize = 400;
+		var direction = 'right';
+		var snake = [{ top: 0, left: 0 }];
+		var apple = null;
+
+		function updateGame() {
+			var head = Object.assign({}, snake[0]); // copy head
+			switch(direction) {
+				case 'right':
+					head.left += dotSize;
+					break;
+				case 'down':
+					head.top += dotSize;
+					break;
+				case 'left':
+					head.left -= dotSize;
+					break;
+				case 'up':
+					head.top -= dotSize;
+					break;
+			}
+
+			if (head.left < 0 || head.top < 0 || head.left === gameBoardSize || head.top === gameBoardSize || snake.find(dot => dot.left === head.left && dot.top === head.top)) {
+				// game over
+				return snake = [{ top: 0, left: 0 }];
+			}
+
+			snake.unshift(head);
+
+			if (apple && apple.top === head.top && apple.left === head.left) {
+				apple = null;
+			} else {
+				snake.pop();
+			}
+
+			if (!apple) {
+				apple = { top: Math.floor(Math.random() * gameBoardSize / dotSize) * dotSize, left: Math.floor(Math.random() * gameBoardSize / dotSize) * dotSize };
+			}
+		}
+
+		setInterval(updateGame, 125);
+
+		window.onkeydown = function(e) {
+			switch(e.key) {
+				case 'ArrowUp':
+					if (direction !== 'down') direction = 'up';
+					break;
+				case 'ArrowDown':
+					if (direction !== 'up') direction = 'down';
+					break;
+				case 'ArrowLeft':
+					if (direction !== 'right') direction = 'left';
+					break;
+				case 'ArrowRight':
+					if (direction !== 'left') direction = 'right';
+					break;
+			}
+		};
+
+		function drawGame() {
+			var gameBoard = document.getElementById('game-board');
+			gameBoard.innerHTML = '';
+			snake.forEach(function(dot) {
+				var dotElement = document.createElement('div');
+				dotElement.className = 'dot';
+				dotElement.style.left = `${dot.left}px`;
+				dotElement.style.top = `${dot.top}px`;
+				gameBoard.appendChild(dotElement);
+			});
+			if (apple) {
+				var appleElement = document.createElement('div');
+				appleElement.className = 'apple';
+				appleElement.style.left = `${apple.left}px`;
+				appleElement.style.top = `${apple.top}px`;
+				gameBoard.appendChild(appleElement);
+			}
+		}
+
+		setInterval(drawGame, 10);
+	</script>
+<h2>SnakeX: A Brief Intro</h2>
+<em><h3>Created by arpro89 on Feb 21 2024</h3></em>	
+<p>A simple game harnessing the power of JavaScript HTML. Just a hobby project.</p>
+<h4>Applications:</h4>
+<h4>
+	<ul>
+		<li>Can be used as a waiting game</li>
+        <li>Just as a fun time killer while you are bored</li>
+		<li><em>Etc.</em></li>
+    </ul>
+</h4>
+</body>
+</html>
